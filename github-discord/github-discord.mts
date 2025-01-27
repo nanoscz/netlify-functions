@@ -58,11 +58,13 @@ const notify = async (message: string) => {
 
 export default async (request: Request, context: Context) => {
   try {
-    const githubEvent = request.headers.get("x-github-event") ?? "Unknown";
-    const payload = await request.json()
+    const githubEvent = request.headers.get("x-github-event");
+    if (!githubEvent) {
+      return new Response(JSON.stringify({ message: "No publish in discord" }))
+    }
+    const payload = await request.json() ?? {}
+    const isSignatureValid = verifySignature(request, JSON.stringify(payload));
 
-    const isSignatureValid = verifySignature(request, payload);
-    console.log("isSignatureValid", isSignatureValid)
     if (!isSignatureValid) {
       return new Response(JSON.stringify({ message: "Signature invalid" }), {
         status: 500,
@@ -77,9 +79,7 @@ export default async (request: Request, context: Context) => {
 
     await notify(message);
 
-    return new Response(JSON.stringify({ message: "done" }), {
-
-    })
+    return new Response(JSON.stringify({ message: "done" }))
   } catch (error: any) {
     return new Response(JSON.stringify({ message: error.toString() }), {
       status: 500,
