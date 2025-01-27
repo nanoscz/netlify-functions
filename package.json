@@ -4,7 +4,7 @@
   "description": "Netlify Functions",
   "main": "index.js",
   "scripts": {
-    "dev": "netlify functions:serve"
+    "dev": "netlify dev"
   },
   "keywords": [],
   "author": "",
