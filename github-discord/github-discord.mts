@@ -6,7 +6,7 @@ export default (request: Request, context: Context) => {
     const subject = url.searchParams.get('name') || 'World'
 
     return new Response(`Hello ${subject}`)
-  } catch (error) {
+  } catch (error: any) {
     return new Response(error.toString(), {
       status: 500,
     })
